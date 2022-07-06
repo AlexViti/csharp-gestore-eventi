@@ -8,52 +8,48 @@ namespace GestoreEventi
 {
     internal class Event
     {
+        private string title;
+        private DateOnly date;
+        private int capacity;
+        
         public Event(string title, DateOnly date, int capacity)
         {
-            try
-            {
-                Title = title;
-                Date = date;
-                Capacity = capacity;
-                Reserved = 0;                
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-                throw new Exception("Error in Event constructor", ex);
-            }
+            this.Title = title;
+            this.Date = date;
+            this.Capacity = capacity;
+            this.Reserved = 0;                
         }
         public string Title
         {
-            get => Title;
+            get => this.title;
             
             set
             {
-                if (string.IsNullOrEmpty(value))
-                    throw new ArgumentException("Title cannot be null or empty");
-                Title = value;
+                if (value == "")
+                    throw new ArgumentException("Title cannot be null or empty");                
+                this.title = value;
             }
         }
         public DateOnly Date
         {
-            get => Date;
+            get => this.date;
             
             set
             {
                 if (value < DateOnly.FromDateTime(DateTime.Now))
-                    throw new ArgumentException("Date cannot be in the past");
-                Date = value;
+                    throw new ArgumentException("Date cannot be in the past");                
+                this.date = value;
             }
         }
         public int Capacity
         {
-            get => Capacity;
+            get => this.capacity;
             
             protected set
             {
                 if (value < 0)
-                    throw new ArgumentException("Capacity cannot be negative");
-                Capacity = value;
+                    throw new ArgumentException("Capacity cannot be negative");                
+                this.capacity = value;
             }
         }
         public int Reserved { get; private set;  }
@@ -61,20 +57,20 @@ namespace GestoreEventi
         public void Book()
         {
             if (Reserved >= Capacity)
-                throw new Exception("Event is full");
-            Reserved++;
+                throw new Exception("Event is full");            
+            this.Reserved++;
         }
 
         public void Cancel()
         {
             if (Reserved == 0)
-                throw new Exception("Event is empty");
-            Reserved--;
+                throw new Exception("Event is empty");            
+            this.Reserved--;
         }
 
         public override string ToString()
         {
-            return $"{Date.ToString("dd/MM/yyyy")} - {Title}";
+            return $"{Date:dd/MM/yyyy} - {Title}";
         }
     }
 }
