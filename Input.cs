@@ -20,20 +20,30 @@ namespace GestoreEventi
             return input;
         }
 
+        public static DateOnly Date()
+        {
+            do
+            {
+                string? input = Console.ReadLine();
+                if (DateOnly.TryParse(input, out DateOnly parsedDate))
+                    return parsedDate;
+                else
+                    Console.WriteLine("Invalid date");
+            } while (true);
+        }
+
         public static DateOnly FutureDate()
         {
-            DateOnly date;
             DateOnly today = DateOnly.FromDateTime(DateTime.Now);
             do
             {
                 string? input = Console.ReadLine();
                 if (DateOnly.TryParse(input, out DateOnly parsedDate)
                     && parsedDate > today)
-                    date = parsedDate;
+                    return parsedDate;
                 else
                     Console.WriteLine("Invalid date");
-            } while (date <= today);
-            return date;
+            } while (true);
         }
         
         public static int PositiveInt()

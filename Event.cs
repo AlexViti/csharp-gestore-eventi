@@ -11,14 +11,16 @@ namespace GestoreEventi
         private string title;
         private DateOnly date;
         private int capacity;
-        
+
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
         public Event(string title, DateOnly date, int capacity)
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
         {
             try
             {
                 this.Title = title;
-                this.Date = date;
-                this.Capacity = capacity;
+                this.Date = date!;
+                this.Capacity = capacity!;
                 this.Reserved = 0;
             }
             catch (Exception ex)
@@ -104,7 +106,7 @@ namespace GestoreEventi
             return $"{Date:dd/MM/yyyy} - {Title}";
         }
 
-        public static bool TryCreat(out Event? e)
+        public static bool TryCreate(out Event? e)
         {
             Console.Write("Inserisci titolo: ");
             string title = Input.StringNotEmpyty("Title");
@@ -127,13 +129,43 @@ namespace GestoreEventi
         
         public static Event Create()
         {
-            bool success = false;
+            bool success;
             Event ev;
             do
             {
-                success = TryCreat(out ev);
+                success = TryCreate(out ev!);
             } while (!success);
             return ev!;
+        }
+
+        public bool BookOrCancel(bool book)
+        {
+            Console.WriteLine($"Vuoi {(book ? "riservare" : "cancellare")} dei posti? (yes or no)");
+            if (Input.YesOrNo())
+            {
+                Console.WriteLine($"Quanti posti vuoi {(book ? "riservare" : "cancellare")}");
+                int numeroPosti = Input.PositiveInt();
+                bool success = false;
+                do
+                {
+                    try
+                    {
+                        if (book)
+                            this.Book(numeroPosti);
+                        else
+                            this.Cancel(numeroPosti);
+                        success = true;
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine(ex.Message);
+                    }
+                } while (!success);
+                Console.WriteLine("Ci sono {0} posti riservati e {1} disponibili", this.Reserved, this.Available);
+                return true;
+            }
+            else
+                return false;
         }
 
     }

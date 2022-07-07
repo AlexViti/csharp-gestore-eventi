@@ -9,7 +9,7 @@ namespace GestoreEventi
     internal class EventProgram
     {
         public string Title { get; set; }
-        public List<Event> Events { get; set; }
+        public List<Event> Events { get; private set; }
 
         public EventProgram(string title)
         {
@@ -27,6 +27,11 @@ namespace GestoreEventi
             this.Events.Add(new Event(title, date, capacity));
         }
 
+        public void AddEvent(Event ev)
+        {
+            this.Events.Add(ev);
+        }
+
         public List<Event> GetEventsByDate(DateOnly date)
         {
             return this.Events.Where(e => e.Date == date).ToList();
@@ -36,18 +41,20 @@ namespace GestoreEventi
 
         public int EventNumber() => this.Events.Count;
 
-        public void PrintEvents()
+        public static void PrintEvents(List<Event> events)
         {
-            Console.WriteLine($"{this.Title}");
-            foreach (Event e in this.Events)
-                Console.WriteLine(e.ToString());
+            foreach (Event e in events)
+                Console.WriteLine(" - " + e.ToString());
+        }
+        public void Print()
+        {
+            Console.WriteLine($"{this.Title}:");
+            EventProgram.PrintEvents(this.Events);
         }
 
         public void RemoveAll()
         {
             this.Events.Clear();
         }
-
-        
     }
 }

@@ -1,44 +1,33 @@
 ﻿using GestoreEventi;
 
-Console.WriteLine("Crea evento: ");
-Event ev = Event.Create();
+Console.WriteLine("Crea programma eventi");
+Console.WriteLine("Inserisci titolo programma: ");
+string title = Input.StringNotEmpyty("Title");
+Console.WriteLine("Quanti eventi vuoi creare?");
+int numberEvents = Input.PositiveInt();
 
-bool book;
-do
-    book = BookOrCancel(true);
-while (book);
+EventProgram program = new(title);
 
-bool cancel;
-do
-    cancel = BookOrCancel(false);
-while (cancel);
-
-bool BookOrCancel(bool book)
+for (int i = 1; i <= numberEvents; i++)
 {
-    Console.WriteLine($"Vuoi {(book ? "riservare" : "cancellare")} dei posti? (yes or no)");
-    if (Input.YesOrNo())
-    {
-        Console.WriteLine($"Quanti posti vuoi {(book ? "riservare" : "cancellare")}");
-        int numeroPosti = Input.PositiveInt();
-        bool success = false;
-        do
-        {
-            try
-            {
-                if(book)
-                    ev.Book(numeroPosti);
-                else
-                    ev.Cancel(numeroPosti);
-                success = true;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-            }
-        } while (!success);
-        Console.WriteLine("Ci sono {0} posti riservati e {1} disponibili", ev.Reserved, ev.Available);
-        return true;
-    }
-    else
-        return false;
+    Console.WriteLine("\n\nCrea evento n°{0}: ", i);
+    Event ev = Event.Create();
+    program.AddEvent(ev);
+
+    bool book;
+    do
+        book = ev.BookOrCancel(true);
+    while (book);
+
+    bool cancel;
+    do
+        cancel = ev.BookOrCancel(false);
+    while (cancel);   
 }
+
+Console.WriteLine($"Numero di eventi presenti " + program.Events.Count);
+EventProgram.PrintEvents(program.Events);
+Console.WriteLine("\n Inserisci una data, ne verranno stampati gli eventi in programma");
+EventProgram.PrintEvents(program.GetEventsByDate(Input.FutureDate()));
+program.RemoveAll();
+
